@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10283a" />
+    <title>Splendor — Gem District</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="grain"></div>
+    <main id="app">
+      <section id="start-screen" class="start-screen">
+        <div class="brand-lockup">
+          <p class="eyebrow">THE MERCHANT'S TABLE</p>
+          <h1>Splendor</h1>
+          <p class="subtitle">สร้างอาณาจักรค้าอัญมณีของคุณ</p>
+        </div>
+        <div class="hero-gems" aria-hidden="true">
+          <span class="hero-gem diamond"></span><span class="hero-gem sapphire"></span><span class="hero-gem emerald"></span><span class="hero-gem ruby"></span><span class="hero-gem onyx"></span>
+        </div>
+        <div class="start-panel">
+          <div class="field-row">
+            <label for="player-name">ชื่อพ่อค้า</label>
+            <input id="player-name" maxlength="18" value="คุณ" autocomplete="off" />
+          </div>
+          <div class="mode-picker" role="group" aria-label="รูปแบบเกม">
+            <button class="mode-option selected" type="button" data-mode="solo"><span class="mode-icon">♛</span><span><strong>เล่นกับ AI</strong><small>เริ่มเล่นได้ทันที</small></span></button>
+            <button class="mode-option" type="button" data-mode="online"><span class="mode-icon">⌁</span><span><strong>เล่นออนไลน์</strong><small>สร้างหรือเข้าห้อง 2 คน</small></span></button>
+          </div>
+          <div id="room-code-field" class="field-row room-code-field hidden">
+            <label for="room-code-input">รหัสห้อง</label>
+            <input id="room-code-input" maxlength="6" placeholder="เช่น J8M4QZ" autocomplete="off" />
+          </div>
+          <button id="start-game" class="primary-btn"><span id="start-label">เริ่มเกมกับ AI</span><span class="btn-gem">◆</span></button>
+          <p id="start-note" class="start-note">แข่งขันสะสมศักดิ์ศรีให้ถึง 15 คะแนนก่อนคู่แข่ง</p>
+        </div>
+        <button id="how-to-play" class="text-btn">วิธีเล่น</button>
+      </section>
+
+      <section id="game-screen" class="game-screen hidden" aria-live="polite">
+        <header class="topbar">
+          <button id="new-game" class="icon-action" aria-label="เริ่มเกมใหม่" title="เริ่มเกมใหม่">↻</button>
+          <div class="title-wrap"><p class="eyebrow">THE MERCHANT'S TABLE</p><h1>Splendor</h1></div>
+          <div class="topbar-actions"><button id="room-button" class="icon-action hidden" aria-label="ดูรหัสห้อง" title="ดูรหัสห้อง">⌁</button><button id="rules-button" class="icon-action" aria-label="ดูกติกา" title="ดูกติกา">?</button></div>
+        </header>
+
+        <section class="opponents-wrap">
+          <article id="bot-panel" class="player-panel bot-panel">
+            <div class="player-portrait bot-avatar">A</div>
+            <div class="player-identity"><span class="turn-pip"></span><div><h2 id="rival-name">Amélie</h2><p id="rival-subtitle">พ่อค้าแห่งมาร์แซย์</p></div></div>
+            <div class="player-score"><b id="bot-score">0</b><span>ศักดิ์ศรี</span></div>
+            <div id="bot-bonuses" class="bonus-row compact"></div>
+            <div id="bot-reserved" class="reserved-count" title="ไพ่ที่จอง">♢ <span>0</span></div>
+          </article>
+          <div id="status-ribbon" class="status-ribbon"><span class="status-dot"></span><span id="status-text">ตาคุณ — เลือกการกระทำ</span></div>
+        </section>
+
+        <section class="table-layout">
+          <aside class="left-rail">
+            <div class="rail-heading"><span>เหล่าขุนนาง</span><small>3 โบนัส = 3 ศักดิ์ศรี</small></div>
+            <div id="nobles" class="nobles"></div>
+            <div class="deck-guide">
+              <span class="guide-mark">✦</span>
+              <p>สะสมโบนัสถาวรจากไพ่<br />เพื่อให้ค่าซื้อถูกลง</p>
+            </div>
+          </aside>
+
+          <section class="market-area">
+            <div class="market-heading"><span>ตลาดพัฒนา</span><span class="heading-line"></span><small>เลือกซื้อหรือจองไพ่</small></div>
+            <div id="market" class="market"></div>
+          </section>
+
+          <aside class="right-rail">
+            <div class="rail-heading"><span>คลังอัญมณี</span><small>หยิบได้สูงสุด 3 เหรียญ</small></div>
+            <div id="bank-tokens" class="bank-tokens"></div>
+            <div id="token-selection" class="token-selection">เลือกแล้ว 0 / 3</div>
+            <button id="take-tokens" class="rail-action" disabled>รับอัญมณี <span>→</span></button>
+            <button id="clear-tokens" class="clear-action" disabled>ล้างที่เลือก</button>
+            <div class="token-rule">2 เหรียญชนิดเดียวกันได้<br />เมื่อกองนั้นเหลืออย่างน้อย 4</div>
+          </aside>
+        </section>
+
+        <section class="human-area">
+          <article id="human-panel" class="player-panel human-panel">
+            <div class="player-portrait human-avatar">✦</div>
+            <div class="player-identity"><span class="turn-pip"></span><div><h2 id="human-name">คุณ</h2><p>พ่อค้าอัญมณี</p></div></div>
+            <div class="player-score"><b id="human-score">0</b><span>ศักดิ์ศรี</span></div>
+            <div id="human-bonuses" class="bonus-row"></div>
+            <div id="human-tokens" class="player-tokens"></div>
+          </article>
+          <section class="hand-section">
+            <div class="hand-heading"><span>ไพ่ที่จองไว้</span><small id="reserved-info">0 / 3</small></div>
+            <div id="human-reserved" class="reserved-cards"><p class="empty-hand">ยังไม่มีไพ่ที่จอง</p></div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div id="overlay" class="overlay hidden"></div>
+    <section id="rules-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+      <button class="close-modal" data-close-modal aria-label="ปิด">×</button>
+      <p class="eyebrow">QUICK GUIDE</p><h2 id="rules-title">วิธีเล่น Splendor</h2>
+      <div class="rules-grid">
+        <div><span class="rule-icon">1</span><h3>เก็บอัญมณี</h3><p>เลือกรับเหรียญคนละสีได้สูงสุด 3 เหรียญ หรือรับสีเดียว 2 เหรียญ เมื่อกองเหลือ 4 เหรียญขึ้นไป</p></div>
+        <div><span class="rule-icon">2</span><h3>ซื้อไพ่พัฒนา</h3><p>จ่ายอัญมณีตามค่าบนไพ่ โบนัสอัญมณีของไพ่ที่มีอยู่จะลดค่าใช้จ่ายอย่างถาวร</p></div>
+        <div><span class="rule-icon">3</span><h3>จองโอกาส</h3><p>จองไพ่ได้ไม่เกิน 3 ใบ และรับทองคำ 1 เหรียญถ้ามี เหรียญทองใช้แทนสีใดก็ได้</p></div>
+        <div><span class="rule-icon">★</span><h3>ชนะเกม</h3><p>ได้ไพ่และเยี่ยมเยียนขุนนางเพื่อสะสมศักดิ์ศรี ผู้มี 15 คะแนนขึ้นไปเมื่อจบรอบชนะ</p></div>
+      </div>
+    </section>
+
+    <section id="noble-modal" class="modal noble-modal hidden" role="dialog" aria-modal="true">
+      <p class="eyebrow">NOBLE VISIT</p><h2>ขุนนางต้องการพบคุณ</h2><p class="modal-note">คุณผ่านเกณฑ์ของขุนนางมากกว่าหนึ่งท่าน เลือกผู้เยี่ยมเยียนหนึ่งท่าน</p>
+      <div id="noble-choices" class="noble-choices"></div>
+    </section>
+
+    <section id="discard-modal" class="modal discard-modal hidden" role="dialog" aria-modal="true">
+      <p class="eyebrow">THE VAULT IS FULL</p><h2>คลังอัญมณีเต็มแล้ว</h2><p class="modal-note">คุณมีอัญมณีเกินกำหนด กรุณาคลิกเหรียญในแถบของคุณเพื่อคืนอีก <strong id="discard-count">0</strong> เหรียญ</p>
+    </section>
+
+    <section id="room-modal" class="modal room-modal hidden" role="dialog" aria-modal="true" aria-labelledby="room-title">
+      <button class="close-modal" data-close-room aria-label="ปิด">×</button>
+      <p class="eyebrow">ONLINE MERCHANT TABLE</p><h2 id="room-title">เชิญเพื่อนเข้าห้อง</h2>
+      <p class="modal-note">ส่งรหัสนี้ให้เพื่อน แล้วให้เพื่อนเลือก “เล่นออนไลน์” และกรอกรหัสห้อง</p>
+      <div class="room-code-display"><span id="room-code-display">------</span><button id="copy-room-code" type="button">คัดลอก</button></div>
+      <div class="room-state"><span class="status-dot"></span><span id="room-state-text">กำลังรอคู่แข่งเข้าร่วม…</span></div>
+    </section>
+
+    <section id="game-over-modal" class="modal game-over hidden" role="dialog" aria-modal="true">
+      <div id="victory-seal">✦</div><p class="eyebrow" id="game-over-kicker">THE MARKET CLOSES</p><h2 id="game-over-title">คุณชนะ!</h2><p id="game-over-copy" class="modal-note"></p>
+      <div class="final-scores"><div><span id="final-human-name">คุณ</span><b id="final-human-score">0</b></div><div><span>Amélie</span><b id="final-bot-score">0</b></div></div>
+      <button id="play-again" class="primary-btn"><span>เล่นอีกครั้ง</span><span class="btn-gem">◆</span></button>
+    </section>
+
+    <template id="card-template">
+      <article class="dev-card" tabindex="0"><div class="card-top"><span class="points"></span><span class="gem-bonus"></span></div><div class="card-art"><i></i><i></i><i></i></div><div class="card-cost"></div><div class="card-actions"><button class="buy-card">ซื้อ</button><button class="reserve-card">จอง</button></div></article>
+    </template>
+    <script src="game.js"></script>
+  </body>
+</html>
