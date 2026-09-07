@@ -1,0 +1,12 @@
+{
+  "name": "splendor-gem-district",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A two-player Splendor-inspired browser game with online rooms.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+}
